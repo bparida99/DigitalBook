@@ -1,5 +1,0 @@
-package com.cts.dbs.exception;
-
-public class DigitalBooksException extends Exception{
-
-}
