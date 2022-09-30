@@ -1,0 +1,21 @@
+package com.cts.purchase.bo;
+
+import java.util.List;
+
+import com.cts.dbs.entity.BooksofUser;
+import com.cts.dbs.exception.DigitalBooksException;
+
+public interface BooksOfUserBo {
+	
+	public BooksofUser addPurchase(BooksofUser booksofUser);
+	
+	public BooksofUser updatePurchase(BooksofUser booksofUser);
+	
+	public List<BooksofUser> findPurchaseByBookId(Long id);
+	
+	public List<BooksofUser> findPurchaseByUserId(Long id);
+	
+	public BooksofUser findPurchaseById(Long id) throws DigitalBooksException;
+	
+
+}

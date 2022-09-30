@@ -1,0 +1,13 @@
+
+spring.application.name= 'reader-service'
+server.port=8080
+spring.datasource.url=jdbc:postgresql://localhost:5432/DigitalBooks
+spring.datasource.username=postgres
+spring.datasource.password=biswojit
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.platform=postgres
+spring.datasource.initialization-mode=always
+# The Postgresql dialect makes Hibernate generate better SQL for the chosen database
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+

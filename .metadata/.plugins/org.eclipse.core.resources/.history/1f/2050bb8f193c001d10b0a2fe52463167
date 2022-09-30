@@ -1,0 +1,35 @@
+package com.cts.dbs.bo.impl;
+
+import org.springframework.stereotype.Service;
+
+import com.cts.dbs.bo.AuthorBo;
+import com.cts.dbs.entity.Author;
+
+@Service
+public class AuthorBoImpl implements AuthorBo{
+
+	@Override
+	public Author getAuthorById(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Author getAuthorByIdAndPwd(Long id, String pwd) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Author createAuthor(Author author) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Author updateAuthor(Author author) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

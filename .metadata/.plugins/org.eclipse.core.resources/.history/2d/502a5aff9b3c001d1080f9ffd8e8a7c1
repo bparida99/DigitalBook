@@ -1,0 +1,57 @@
+package com.cts.dbs.api;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cts.dbs.bo.BookBo;
+import com.cts.dbs.entity.Book;
+import com.cts.dbs.exception.DigitalBooksException;
+
+@RestController
+public class BookController {
+	
+	@Autowired
+	private BookBo bookBo;
+	
+	Logger logger = LoggerFactory.getLogger(AuthorController.class);
+	
+	@PostMapping("/addBook")
+	public ResponseEntity<Book> addBook(@RequestBody Book book){
+		
+		ResponseEntity<Book> reBook;
+		Book book1 =bookBo.createBook(book);
+		reBook = new ResponseEntity<>(book1,HttpStatus.OK);
+		return reBook;
+	}
+	
+	@PutMapping("/updateBook")
+	public ResponseEntity<Book> updateBook(@RequestBody Book book){
+		ResponseEntity<Book> reBook;
+		try {
+			Book book1= bookBo.updateBook(book);
+			reBook = new ResponseEntity<Book>(book1,HttpStatus.OK);
+		} catch (DigitalBooksException e) {
+			logger.error("Unable to update book"+e);
+			reBook = new ResponseEntity<Book>(HttpStatus.BAD_REQUEST);
+		}
+		return reBook;
+	}
+	
+	
+	public ResponseEntity<List<Book>> fetchAllBooks(){
+		ResponseEntity<List<Book>> reBook;
+		List<Book> allBook = bookBo.getAllBook();
+		reBook= new ResponseEntity<List<Book>>(allBook,HttpStatus.OK);
+		return reBook;
+	}
+
+}

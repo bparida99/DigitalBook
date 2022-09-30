@@ -1,0 +1,5 @@
+package com.cts.ns.bo;
+
+public class NotificationBo {
+
+}

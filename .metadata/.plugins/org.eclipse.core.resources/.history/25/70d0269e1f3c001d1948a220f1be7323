@@ -1,0 +1,21 @@
+package com.cts.dbs.bo;
+
+import java.util.List;
+
+import com.cts.dbs.entity.Book;
+
+public interface BookBo {
+	
+	public Book createBook(Book book);
+	
+	public Book updateBook(Book book);
+	
+	public Book deleteBook(Book book);
+	
+	public List<Book> getAllBook();
+	
+	public List<Book> findByBookName(String name);
+	
+	
+
+}

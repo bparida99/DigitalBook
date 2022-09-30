@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;CostumizeSecurity.java&apos; to &apos;ReaderService/src/main/java/com.cts.reader.config&apos;&#x0D;&#x0A;- Original project: &apos;DigitalBooksSecurity&apos;&#x0D;&#x0A;- Destination element: &apos;ReaderService/src/main/java/com.cts.reader.config&apos;&#x0D;&#x0A;- Original element: &apos;com.cts.sec.CostumizeSecurity.java&apos;" description="Copy compilation unit" destination="=ReaderService/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.cts.reader.config" element1="/src\/main\/java=/optional=/true=/=/maven.pomderived=/true=/&lt;com.cts.sec{CostumizeSecurity.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1664280220875" units="1" version="1.0"/>
+</session>

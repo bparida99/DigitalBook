@@ -1,0 +1,16 @@
+package com.cts.reader.bo;
+
+import com.cts.dbs.entity.Reader;
+import com.cts.dbs.exception.DigitalBooksException;
+
+public interface ReaderBo {
+
+	public Reader findReaderById(Long id) throws DigitalBooksException;
+	
+	public Reader findReaderByEmailAndPwd(String email, String pwd);
+	
+	public Reader addReader(Reader reader);
+	
+	public Reader updateReader(Reader reader) throws DigitalBooksException;
+	
+}

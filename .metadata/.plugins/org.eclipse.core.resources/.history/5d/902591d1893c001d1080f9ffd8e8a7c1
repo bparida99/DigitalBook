@@ -1,0 +1,31 @@
+package com.cts.dbs.api;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cts.dbs.bo.AuthorBo;
+import com.cts.dbs.entity.Author;
+import com.cts.dbs.exception.DigitalBooksException;
+
+@RestController
+@RequestMapping("/author")
+public class AuthorController {
+
+	@Autowired
+	private AuthorBo authorBo;
+	
+	ResponseEntity<Author> rAuthor1;
+	
+	public ResponseEntity<Author> createAuthor(Author author) {
+		try {
+			Author author = author
+		  author1 = new ResponseEntity<>(HttpStatus.OK,) 
+		}catch(DigitalBooksException e) {
+			
+		}
+		return author1;
+	}
+}

@@ -1,0 +1,50 @@
+package com.cts.dbs.bo.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.cts.dbs.bo.BookBo;
+import com.cts.dbs.dao.BookDAO;
+import com.cts.dbs.entity.Book;
+
+@Service
+public class BookBoImpl implements BookBo{
+
+	@Autowired
+	private BookDAO dao;
+	
+	@Override
+	public Book createBook(Book book) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Book updateBook(Book book) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Book deleteBook(Book book) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Book> getAllBook() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Book> findByBookName(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+
+}

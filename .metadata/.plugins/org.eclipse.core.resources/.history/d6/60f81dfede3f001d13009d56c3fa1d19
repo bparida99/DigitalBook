@@ -1,0 +1,20 @@
+package com.cts.author.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import com.cts.author.dto.Book;
+
+@Component
+public class BookRestService {
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	public String addBook(Book book,long id) {
+		return "success";
+	}
+	
+
+}

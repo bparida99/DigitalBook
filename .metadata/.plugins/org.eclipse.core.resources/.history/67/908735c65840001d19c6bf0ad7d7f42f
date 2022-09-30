@@ -1,0 +1,5 @@
+package com.cts.purchase.config;
+
+public class KafkaProducerConfiguration {
+
+}

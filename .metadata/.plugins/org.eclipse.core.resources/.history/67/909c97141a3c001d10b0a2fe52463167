@@ -1,0 +1,10 @@
+package com.cts.dbs.exception;
+
+public class DigitalBooksException extends Exception{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+}

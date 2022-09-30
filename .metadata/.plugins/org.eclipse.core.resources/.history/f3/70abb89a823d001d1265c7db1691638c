@@ -1,0 +1,58 @@
+package com.cts.book.enitity;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="BOOK")
+public class Book {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@Column(name="BOOK_ID")
+	private long bookId;
+	@Column(name="BOOK_NAME")
+	private String bookName;
+	@Column(name="PUBLISHER")
+	private String publisher;
+	@Column(name="LOGO")
+	private String logo;
+	@Column(name="AUTHOR_ID")
+	private Long authorId;
+	@Column(name="AUTHOR_NAME")
+	private String authorName;
+	@Column(name="PUBLISHED_DATE")
+	private Date publishedDate;
+	@Column(name="STATUS")
+	private String status;
+	@Column(name="PRICE")
+	private Double price;
+	public Book() {
+		super();
+	}
+	public Book(long bookId, String bookName, String publisher, String logo, Long authorId, String authorName,
+			Date publishedDate, String status, Double price) {
+		super();
+		this.bookId = bookId;
+		this.bookName = bookName;
+		this.publisher = publisher;
+		this.logo = logo;
+		this.authorId = authorId;
+		this.authorName = authorName;
+		this.publishedDate = publishedDate;
+		this.status = status;
+		this.price = price;
+	}
+	
+	
+	
+	
+}

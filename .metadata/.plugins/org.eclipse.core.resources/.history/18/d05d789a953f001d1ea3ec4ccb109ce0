@@ -1,0 +1,13 @@
+package com.cts.dbook;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DigitalBookServerApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(DigitalBookServerApplication.class, args);
+	}
+
+}

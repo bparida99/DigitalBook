@@ -1,0 +1,5 @@
+package com.cts.author.dto;
+
+public class Book {
+
+}

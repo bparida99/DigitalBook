@@ -1,0 +1,17 @@
+package com.cts.purchase.dao;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.cts.dbs.entity.BooksofUser;
+
+@Repository
+public interface BooksOfUserDAO extends JpaRepository<BooksofUser, Long>{
+
+	public List<BooksofUser> findByBook_id(Long id);
+	
+	public List<BooksofUser> findByUser_id(Long id);
+	
+}
