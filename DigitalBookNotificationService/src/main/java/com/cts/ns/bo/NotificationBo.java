@@ -1,5 +1,7 @@
 package com.cts.ns.bo;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +36,9 @@ public class NotificationBo {
 		}catch(Exception e) {
 			logger.error("Error in consumer :"+e);
 		}
+	}
+	
+	public List<Notification> getAllByuId(Long id){
+		return dao.findByUserId(id);
 	}
 }

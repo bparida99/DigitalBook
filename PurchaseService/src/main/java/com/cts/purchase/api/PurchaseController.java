@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ import com.cts.purchase.exception.DigitalBooksException;
 
 @RestController
 @RequestMapping("/api/v1/digitalbooks/purchase")
+@CrossOrigin("*")
 public class PurchaseController {
 
 	Logger logger = LoggerFactory.getLogger(PurchaseController.class);
@@ -72,8 +74,22 @@ public class PurchaseController {
     	}
     }
     
+    @PutMapping("/cancelReaderPurchase")
+    public ResponseEntity<Purchase> updateReaderPurchase(@RequestBody Purchase purchase) throws DigitalBooksException{
+    	try {
+    	booksOfUserBo.findPurchaseById(purchase.getBooking_id());
+    	purchase.setExpiryDate(Date.valueOf(LocalDate.now()));
+    	purchase.setCanceledBy("READER");
+    	Purchase purchase2 = booksOfUserBo.addPurchase(purchase);
+    	return new ResponseEntity<Purchase>(purchase2,HttpStatus.OK);
+    	}catch(DigitalBooksException e) {
+    		logger.error("exception"+e);
+    		return new ResponseEntity<Purchase>(HttpStatus.BAD_REQUEST);
+    	}
+    }
+    
     @GetMapping("/cancelPurchase/{bookId}")
-    public ResponseEntity<String> cancelPurchase(@PathVariable long bookId){
+    public ResponseEntity<Object> cancelPurchase(@PathVariable long bookId){
     	List<Purchase> list = booksOfUserBo.findPurchaseByBookId(bookId);
     	list.forEach(item->{
     		item.setCanceledBy("AUTHOR");
@@ -81,7 +97,7 @@ public class PurchaseController {
     	    booksOfUserBo.updatePurchase(item);
     	    sendNotification(item.getUserId());
     	});
-    	return new ResponseEntity<String>("Success",HttpStatus.OK);
+    	return new ResponseEntity<Object>(HttpStatus.OK);
     }
     
     private void sendNotification(long userId) {

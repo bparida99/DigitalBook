@@ -83,12 +83,22 @@ public class AuthorController {
 	}
 	
 	@PostMapping("addBook/{authorId}")
-	public ResponseEntity<String> addBook(@RequestBody Book book,@PathVariable long authorId) throws DigitalBooksException{
+	public ResponseEntity<Object> addBook(@RequestBody Book book,@PathVariable long authorId) throws DigitalBooksException{
 		Author author = authorBo.getAuthorById(authorId);
 		book.setAuthorId(author.getAuthorId());
 		book.setAuthorName(author.getAuthorName());
 		String response = bookservice.addBook(book);
-		return new ResponseEntity<String>(response,HttpStatus.OK);
+		if(response=="success") {
+			return new ResponseEntity<Object>(HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+	}
+	
+	@GetMapping("findByAuthorEmail/{email}")
+	public ResponseEntity<Author> findByAuthorEmail(@PathVariable String email) throws DigitalBooksException{
+		Author author = authorBo.findByAuthorEmail(email);
+		return new ResponseEntity<Author>(author,HttpStatus.OK);
 	}
 	
 	

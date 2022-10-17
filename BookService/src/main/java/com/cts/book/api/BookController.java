@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import com.cts.book.exception.DigitalBooksException;
 
 @RestController
 @RequestMapping("/api/v1/digitalbooks/books")
+@CrossOrigin("*")
 public class BookController {
 	
 	@Autowired
@@ -69,18 +71,24 @@ public class BookController {
 	}
 	
 	@DeleteMapping("deleteBook/{id}")
-	public ResponseEntity<String> deleteBook(@PathVariable Long id){
-		ResponseEntity<String> status;
+	public ResponseEntity<Book> deleteBook(@PathVariable Long id){
+		ResponseEntity<Book> status;
 		try {
 			Book book= bookBo.findById(id);
 			book.setStatus("DISABLED");
-			bookBo.updateBook(book);
-			status = new ResponseEntity<String>("Book deleted successfully",HttpStatus.OK);
+			book = bookBo.updateBook(book);
+			status = new ResponseEntity<Book>(book,HttpStatus.OK);
 		} catch (DigitalBooksException e) {
 			logger.error("Unable to delete book"+e);
-			status = new ResponseEntity<String>(HttpStatus.BAD_REQUEST); 
+			status = new ResponseEntity<Book>(HttpStatus.BAD_REQUEST); 
 		}
 		return status;
+	}
+	
+	@GetMapping("getBookByAuthorId/{id}")
+	public ResponseEntity<List<Book>> getBookByAuthorId(@PathVariable Long id){
+		List<Book> books = bookBo.findBookByAuthor(id);
+		return new ResponseEntity<List<Book>>(books,HttpStatus.OK);
 	}
 	
 

@@ -42,4 +42,10 @@ public class ReaderBoImpl implements ReaderBo{
 		return dao.saveAndFlush(reader);
 	}
 
+	@Override
+	public Reader findByEmail(String email) throws DigitalBooksException {
+		
+		return dao.findByReaderEmail(email);
+	}
+
 }

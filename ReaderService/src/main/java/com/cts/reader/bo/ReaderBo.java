@@ -13,4 +13,6 @@ public interface ReaderBo {
 	
 	public Reader updateReader(Reader reader) throws DigitalBooksException;
 	
+	public Reader findByEmail(String email) throws DigitalBooksException;
+	
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,6 +66,19 @@ public class ReaderController {
 		try {
 		Reader reader1= readerBo.updateReader(reader);
 		reReader = new ResponseEntity<Reader>(reader1,HttpStatus.OK);
+		}catch(DigitalBooksException e) {
+			logger.error("Unable to update reader details"+e);
+			reReader = new ResponseEntity<Reader>(HttpStatus.BAD_REQUEST);
+		}
+		return reReader;
+	}
+	
+	@GetMapping("/findbyemail/{email}")
+	public ResponseEntity<Reader> findByEmail(@PathVariable String email){
+		ResponseEntity<Reader> reReader;
+		try {
+			Reader reader1= readerBo.findByEmail(email);
+			reReader = new ResponseEntity<Reader>(reader1,HttpStatus.OK);
 		}catch(DigitalBooksException e) {
 			logger.error("Unable to update reader details"+e);
 			reReader = new ResponseEntity<Reader>(HttpStatus.BAD_REQUEST);

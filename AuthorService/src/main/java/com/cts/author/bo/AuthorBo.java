@@ -13,6 +13,7 @@ public interface AuthorBo {
 	
 	public Author updateAuthor(Author author) throws DigitalBooksException;
 	
+	public Author findByAuthorEmail(String email) throws DigitalBooksException;
 	
 
 }

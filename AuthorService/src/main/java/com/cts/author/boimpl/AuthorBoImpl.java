@@ -44,4 +44,9 @@ public class AuthorBoImpl implements AuthorBo{
 		return dao.saveAndFlush(author);
 	}
 
+	@Override
+	public Author findByAuthorEmail(String email) throws DigitalBooksException {
+		return dao.findByEmail(email);
+	}
+
 }
