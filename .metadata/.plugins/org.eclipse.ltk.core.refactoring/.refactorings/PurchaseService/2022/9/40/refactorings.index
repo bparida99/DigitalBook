@@ -1,6 +1,0 @@
-1664412164272	Rename type 'BooksofUser'
-1664412294733	Rename type 'BooksOfUserDAO'
-1664412647629	Rename type 'BooksOfUserBo'
-1664412962021	Rename type 'BooksOfUserController'
-1664415851204	Rename field 'book_id'
-1664415870031	Rename field 'user_id'
