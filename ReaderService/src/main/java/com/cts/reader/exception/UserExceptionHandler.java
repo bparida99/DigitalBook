@@ -1,15 +1,16 @@
 package com.cts.reader.exception;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class UserExceptionHandler extends ResponseEntityExceptionHandler {

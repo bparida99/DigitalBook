@@ -1,70 +1,64 @@
 package com.cts.reader.config;
 
-import java.util.Arrays;
-import java.util.Collections;
-
+import com.cts.reader.config.jwt.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsWebFilter;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
-import com.cts.reader.config.jwt.JwtFilter;
-
+@Configuration
 @EnableWebSecurity
-public class CostumizeSecurity extends WebSecurityConfigurerAdapter{
-	
+@EnableMethodSecurity(prePostEnabled = true)
+public class CostumizeSecurity{
 	@Autowired
 	private ReaderDetailsService reader;
-	
+
 	@Autowired
-    private JwtFilter jwtFilter;
+	private JwtFilter jwtFilter;
 
-//	@Override
-//	public void configure(WebSecurity web) throws Exception {
-//	    web.ignoring().antMatchers("/api/v1/digitalbooks/readers/addReader");
-//
-//	}
-
-	
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception{
-		//auth.inMemoryAuthentication().withUser("Biswojit").password("abcd").roles("ADMIN");
-		auth.userDetailsService(reader);
-		
-	}
-	
 	@Bean
-	public PasswordEncoder getpassPasswordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+				.csrf(csrf -> csrf.disable()) // Disable CSRF protection
+				.authorizeHttpRequests(authorize -> authorize
+						.requestMatchers(
+								"/api/v1/digitalbooks/readers/authenticate",
+								"/api/v1/digitalbooks/readers/addReader",
+								"/actuator/**",
+								"/api/v1/digitalbooks/readers/",
+								"/v3/api-docs/**",
+								"/swagger-ui/**"
+						).permitAll() // Allow these endpoints without authentication
+						.anyRequest().authenticated() // Require authentication for other endpoints
+				)
+				.sessionManagement(session -> session
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Use stateless sessions
+				);
+
+		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+		return http.build();
 	}
 
-	@Bean(name = BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-	
-		
-	 @Override
-	    protected void configure(HttpSecurity http) throws Exception {
-	        http.csrf().disable().authorizeRequests().antMatchers("/api/v1/digitalbooks/readers/authenticate",
-	        		"/api/v1/digitalbooks/readers/addReader","/api/v1/digitalbooks/readers/")
-	                .permitAll().anyRequest().authenticated()
-	                .and().exceptionHandling().and().sessionManagement()
-	                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-	        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);;
-	    }
+	@Bean
+	public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+		AuthenticationManagerBuilder authenticationManagerBuilder =
+				http.getSharedObject(AuthenticationManagerBuilder.class);
+		authenticationManagerBuilder.userDetailsService(reader).passwordEncoder(passwordEncoder());
+		return authenticationManagerBuilder.build();
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }

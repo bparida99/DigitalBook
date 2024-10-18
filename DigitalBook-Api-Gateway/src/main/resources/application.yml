@@ -1,0 +1,18 @@
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:9090/eureka
+server:
+    port: 9091
+spring:
+    application:
+        name: my-api-gateway
+    cloud:
+        gateway:
+            routes:
+            -   predicates:
+                - Path=/api/v1/digitalbooks/readers/**
+                uri: lb://reader-service/
+            -   predicates:
+                - Path=/api/v1/digitalbooks/author/**
+                uri: lb://author-service/

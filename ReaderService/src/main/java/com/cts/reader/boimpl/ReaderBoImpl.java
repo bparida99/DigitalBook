@@ -19,7 +19,7 @@ public class ReaderBoImpl implements ReaderBo{
 	@Override
 	public Reader findReaderById(Long id) throws DigitalBooksException {
 		Optional<Reader> reader = dao.findById(id);
-		if(reader.isEmpty()) {
+		if(!reader.isPresent()) {
 			throw new DigitalBooksException("Reader not found with id:"+id);
 		}
 		return reader.get();
