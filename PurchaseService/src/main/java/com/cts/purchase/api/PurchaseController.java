@@ -3,6 +3,9 @@ package com.cts.purchase.api;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,7 @@ import com.cts.purchase.exception.DigitalBooksException;
 @RestController
 @RequestMapping("/api/v1/digitalbooks/purchase")
 @CrossOrigin("*")
+@Slf4j
 public class PurchaseController {
 
 	Logger logger = LoggerFactory.getLogger(PurchaseController.class);
@@ -33,16 +37,17 @@ public class PurchaseController {
 	private PurchaseBo booksOfUserBo;
 	
 	@Autowired
-	private KafkaTemplate<String, Long> kafkaTemplate;
+	private KafkaTemplate<Integer, String> kafkaTemplate;
 
 	private static final String TOPIC = "kafka-topic";
 
 	
 	@PostMapping("/addPurchase")
-	public ResponseEntity<Purchase> addPurchase(@RequestBody Purchase bu){
+	public ResponseEntity<Purchase> addPurchase(@RequestBody Purchase bu) throws JsonProcessingException {
 		bu.setExpiryDate(com.cts.purchase.entity.DigitalBooksConstants.defaultDate);
 		bu.setPurchseDate(Date.valueOf(LocalDate.now()));
 		bu = booksOfUserBo.addPurchase(bu);
+		booksOfUserBo.sendPurchaseNotification(bu);
 		return new ResponseEntity<Purchase>(bu, HttpStatus.OK);
 	}
 	
@@ -101,8 +106,10 @@ public class PurchaseController {
     }
     
     private void sendNotification(long userId) {
-    	
-    	kafkaTemplate.send(TOPIC,userId);
+    	Integer key = Math.toIntExact(userId);
+    	kafkaTemplate.send(TOPIC,key,String.valueOf(userId));
     }
+
+
     
 }

@@ -16,6 +16,12 @@ spring:
             -   predicates:
                 - Path=/api/v1/digitalbooks/author/**
                 uri: lb://author-service/
+            - predicates:
+              - Path=/api/v1/digitalbooks/purchase/**
+              uri: lb://purchase-service/
+            - predicates:
+              - Path=/notification/**
+              uri: lb://notification-service/
 
 management:
     endpoints:

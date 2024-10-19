@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 public class NotificationBo {
 
 	private static final String TOPIC = "kafka-topic";
+
+	private static final String TOPIC2 = "purchase-topic";
 	
 	Logger logger = LoggerFactory.getLogger(NotificationBo.class);
 	
@@ -33,6 +35,15 @@ public class NotificationBo {
 		n.setUserId(id);
 		n.setMsg("Book is disabled by Author");
         dao.saveAndFlush(n);
+		}catch(Exception e) {
+			logger.error("Error in consumer :"+e);
+		}
+	}
+
+	@KafkaListener(topics = TOPIC2, groupId = "group_new", containerFactory = "userKafkaListenerFactory")
+	public void purchaseNotification(String data) throws JsonMappingException, JsonProcessingException {
+		try {
+			logger.info("purchaseNotification from producer :"+data);
 		}catch(Exception e) {
 			logger.error("Error in consumer :"+e);
 		}
