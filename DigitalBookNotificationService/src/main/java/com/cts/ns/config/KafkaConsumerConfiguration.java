@@ -1,41 +1,84 @@
 package com.cts.ns.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
-import org.apache.kafka.common.serialization.LongDeserializer;
-import org.apache.kafka.common.serialization.ShortDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.kafka.support.ExponentialBackOffWithMaxRetries;
+import org.springframework.util.backoff.ExponentialBackOff;
+import org.springframework.util.backoff.FixedBackOff;
+
+import java.net.SocketException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfiguration {
+    Logger logger = LoggerFactory.getLogger(KafkaConsumerConfiguration.class);
 
-	@Bean
-	public ConsumerFactory<Integer, String> userConsumerFactory() {
-		Map<String, Object> config = new HashMap<>();
+    @Value("${spring.kafka.topics.RETRY}")
+    private static String RETRY;
+    @Value("${spring.kafka.topics.DLT}")
+    private static String DLT;
 
-		config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-		config.put(ConsumerConfig.GROUP_ID_CONFIG, "group_new");
-		config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
-		config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
-		return new DefaultKafkaConsumerFactory(config, new IntegerDeserializer(), new StringDeserializer());
-	}
 
-	@Bean
-	public ConcurrentKafkaListenerContainerFactory<Integer, String> userKafkaListenerFactory() {
-		ConcurrentKafkaListenerContainerFactory<Integer, String> factory =
-				new ConcurrentKafkaListenerContainerFactory<>();
-		factory.setConsumerFactory(userConsumerFactory());
-		return factory;
-	}
+    public DeadLetterPublishingRecoverer deadLetterPublishingRecoverer() {
+        var deadLetterPublishingRecoverer = new DeadLetterPublishingRecoverer(kafkaTemplate,
+                (r, e) -> {
+                    if (e instanceof RuntimeException) {
+                        return new TopicPartition(RETRY, r.partition());
+                    } else {
+                        return new TopicPartition(DLT, r.partition());
+                    }
+
+                });
+
+        return deadLetterPublishingRecoverer;
+    }
+
+    public DefaultErrorHandler defaultErrorHandler() {
+        var fixedBackOff = new FixedBackOff(1000l, 2);
+        //OR
+        var expoBackup = new ExponentialBackOffWithMaxRetries(2);
+        expoBackup.setInitialInterval(1000l);
+        expoBackup.setMultiplier(2l);
+        expoBackup.setMaxInterval(2000l);
+        var errorHandler = new DefaultErrorHandler(
+                deadLetterPublishingRecoverer(),
+                expoBackup);
+        errorHandler.addRetryableExceptions(SocketException.class);
+        errorHandler.setRetryListeners((record, ex, deliveryAttempt) -> {
+            logger.error("Error in fetching record {}" + " Attempt :" + deliveryAttempt + " Exception: " + ex);
+        });
+        return errorHandler;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<Integer, String>
+    userKafkaListenerFactory(ConsumerFactory<Integer, String> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<Integer, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
+        factory.setCommonErrorHandler(defaultErrorHandler());
+        //factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
+        return factory;
+    }
 }

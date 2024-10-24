@@ -20,7 +20,7 @@ public class NotificationController {
 	@Autowired
 	private NotificationBo bo;
 	
-	
+
 	@GetMapping("/getnotification/{id}")
 	public List<Notification> getAll(@PathVariable Long id){
 		return bo.getAllByuId(id);
